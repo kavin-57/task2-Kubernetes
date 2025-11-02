@@ -1,4 +1,4 @@
-Task 2: Kubernetes Deployment
+Kubernetes Deployment
 Overview
 Deployment of the Task Manager REST API to Kubernetes with MongoDB persistence and Kubernetes pod execution.
 
@@ -48,20 +48,6 @@ DELETE /api/tasks/{id} - Delete task
 GET /api/tasks/search?q=name - Search tasks
 
 PUT /api/tasks/{id}/run - Execute in Kubernetes pod
-
-Architecture
-
-┌─────────────────┐    ┌──────────────────┐
-│   Task Runner   │───▶│     MongoDB      │
-│   (Spring Boot) │    │  (Persistent)    │
-└─────────────────┘    └──────────────────┘
-│
-│ Creates
-▼
-┌─────────────────┐
-│  Temp Pods      │
-│  (busybox)      │
-└─────────────────┘
 
 Verification
 All Task 2 requirements met with Kubernetes pod execution as the key feature.
