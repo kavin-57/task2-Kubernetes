@@ -1,64 +1,67 @@
-# Task 1 — Taskrunner REST API (Java + Spring Boot + MongoDB)
+Task 2: Kubernetes Deployment
+Overview
+Deployment of the Task Manager REST API to Kubernetes with MongoDB persistence and Kubernetes pod execution.
 
-**Candidate:** <Kavin Kishore A>  
-**Date:** <31/10/2025/9:10 PM>
+Quick Start
+Prerequisites
+Docker Desktop with Kubernetes enabled
 
----
+kubectl CLI
 
-## Overview
+Maven
 
-Simple Spring Boot REST API that stores **Task** objects in MongoDB and allows you to search, create, delete, and run them.  
-Each `Task` contains:
-- `id`, `name`, `owner`, `command`
-- A list of `taskExecutions` showing each command run and its output.
+Deploy
+bash
+# Build and deploy
+mvn clean package
+docker build -t taskrunner:latest .
 
----
+kubectl apply -f k8s/mongo-pvc.yaml
+kubectl apply -f k8s/mongo.yaml  
+kubectl apply -f k8s/app-rbac.yaml
+kubectl apply -f k8s/taskrunner.yaml
+Access
+bash
+# Port forwarding
+kubectl port-forward deployment/taskrunner 8080:8080
 
-## How to Run
+# Test API
+curl http://localhost:8080/api/tasks
+Key Features
+✅ Kubernetes Deployment - App and MongoDB in separate pods
 
-1. **Start MongoDB**
-    - Option 1:
-      ```bash
-      docker run -p 27017:27017 -d mongo:6
-      ```
-    - Option 2 (Windows service):  
-      Make sure the `MongoDB` service is running.
+✅ Persistent Storage - MongoDB data survives pod restarts
 
-2. **Open in IntelliJ IDEA**
-    - Import as Maven project.
-    - Run the `com.example.taskrunner.TaskrunnerApplication` main class.
+✅ Kubernetes Pod Execution - Tasks run in temporary pods instead of locally
 
-3. **Access the API**
-   Base URL → `http://localhost:8080/api/tasks`
+✅ RBAC Configuration - Secure Kubernetes API access
 
----
+✅ NodePort Service - Accessible from host machine
 
-## Sample cURL Requests
+API Endpoints
+GET /api/tasks - List all tasks or single task with ?id=
 
-**PUT – Create or Update a Task**
-```bash
-curl -X PUT http://localhost:8080/api/tasks \
-  -H "Content-Type: application/json" \
-  -d '{"id":"123","name":"Print Hello","owner":"<Your Full Name>","command":"echo Hello World!"}'
+PUT /api/tasks - Create/update task
 
----
+DELETE /api/tasks/{id} - Delete task
 
-## 📸 Screenshots (with date/time and name visible)
+GET /api/tasks/search?q=name - Search tasks
 
-All screenshots are located in the `screenshots/` folder.
+PUT /api/tasks/{id}/run - Execute in Kubernetes pod
 
-1. **Create task (PUT /api/tasks) response**  
-   ![Create task](screenshots/1_put_task_response.png)
+Architecture
 
-2. **MongoDB Compass showing `tasks` collection**  
-   ![Tasks in MongoDB Compass](screenshots/2_tasks_in_compass.png)
+┌─────────────────┐    ┌──────────────────┐
+│   Task Runner   │───▶│     MongoDB      │
+│   (Spring Boot) │    │  (Persistent)    │
+└─────────────────┘    └──────────────────┘
+│
+│ Creates
+▼
+┌─────────────────┐
+│  Temp Pods      │
+│  (busybox)      │
+└─────────────────┘
 
-3. **Run task (PUT /api/tasks/{id}/run) response**  
-   ![Run task](screenshots/3_run_task_response.png)
-
-4. **MongoDB Compass showing TaskExecution saved**  
-   ![TaskExecution in Compass](screenshots/4_compass_taskexecution.png)
-
-5. **IntelliJ console showing app startup and execution logs**  
-   ![IntelliJ logs](screenshots/5_intellij_logs.png)
-
+Verification
+All Task 2 requirements met with Kubernetes pod execution as the key feature.
