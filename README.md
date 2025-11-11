@@ -1,6 +1,8 @@
 Task 2: Kubernetes Deployment
+
 Overview
 Deployment of the Task Manager Spring Boot application to Kubernetes with MongoDB persistence and Kubernetes pod execution.
+
 Features
 •	✅ Spring Boot REST API deployed to Kubernetes
 •	✅ MongoDB running in separate pod with persistent storage
@@ -9,29 +11,31 @@ Features
 •	✅ NodePort Service for external access from host machine
 •	✅ Persistent Volume Claims for data persistence
 •	✅ Environment Variable configuration for MongoDB connection
+
 Prerequisites
 •	Docker Desktop with Kubernetes enabled
 •	kubectl CLI
 •	Maven
 •	Java 17
+
 Quick Start
 1. Build Application
 cd taskrunner
 mvn clean package
 docker build -t taskrunner:latest .
+
 2. Deploy to Kubernetes
 # Apply all Kubernetes manifests
 kubectl apply -f k8s/mongo-pvc.yaml
 kubectl apply -f k8s/mongo.yaml
 kubectl apply -f k8s/app-rbac.yaml
 kubectl apply -f k8s/taskrunner.yaml
-
 # Verify pods are running
 kubectl get pods --watch
+
 3. Access Application
 # Port forwarding
 kubectl port-forward deployment/taskrunner 8080:8080
-
 # Or use NodePort directly
 kubectl get services
 # Access via: http://localhost:30080/api/tasks
@@ -148,6 +152,7 @@ Environment Variables
 The application uses these environment variables:
 •	SPRING_DATA_MONGODB_URI: MongoDB connection string
 •	K8S_NAMESPACE: Kubernetes namespace (default: default)
+
 Docker Image
 Multi-stage Docker build:
 •	Stage 1: Maven build with Java 17
@@ -159,6 +164,7 @@ Compliance with Requirements
 •	✅ Endpoints accessible from host machine
 •	✅ Task execution creates Kubernetes pods (not local)
 •	✅ Proof via kubectl commands and curl tests
+
 Screenshots
 See screenshots/task2/ directory for:
 •	Running pods in Kubernetes
